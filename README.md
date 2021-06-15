@@ -20,3 +20,8 @@
 20210613：P96
 
 20210614：P100（完成代码练习）
+
+20210615：P109（结束线性表）
+
+![image-20210615101526509](C:\Users\Shooting stars\AppData\Roaming\Typora\typora-user-images\image-20210615101526509.png)
+
