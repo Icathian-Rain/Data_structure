@@ -25,3 +25,29 @@
 
 ![image-20210615101526509](C:\Users\Shooting stars\AppData\Roaming\Typora\typora-user-images\image-20210615101526509.png)
 
+20210615：P125
+
+20210617：P136
+
+20210618：P141
+
+20210622：P148
+
+20210630：P165
+
+abbbbcccd
+
+012345678
+
+20210705：P175(树)
+
+
+
+![image-20210708155649215](C:\Users\Shooting stars\AppData\Roaming\Typora\typora-user-images\image-20210708155649215.png)
+
+前序遍历为：ABDH##I##EJ###CF##G##
+
+中序遍历为：HDIBJEAFCG
+
+20210708: P236
+
