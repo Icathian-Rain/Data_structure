@@ -3,6 +3,9 @@
 #include <string.h>
 #include <math.h>
 
+#define TRUE 1
+#define FALSE 0
+
 
 //邻接矩阵
 
@@ -82,6 +85,101 @@ void CreatedALGraph(GraphAdjList *G)
         e->next = G->adjList[j].firstedge;
         G->adjList[i].firstedge = e;
     }
+}
+
+
+typedef int boolean;        //boolean是布尔类型，其值是TRUE或FALSE
+boolean visited[MAXVEX];    //访问标志的数组
+
+//? 深度优先遍历递归算法
+// 邻接矩阵类型
+void DFS(MGraph G, int i)
+{
+    int j;
+    visited[i] = TRUE;
+    printf("%c ", G.vexs[i]);
+    for(j = 0; j < G.numVertexes; j++)
+        if(G.arc[i][j] == 1 && !visited[j])
+            DFS(G,j);
+}
+
+void DFSTraverse(MGraph G)
+{
+    int i;
+    for(i = 0; i < G.numVertexes; i++)
+        visited[i] = FALSE;
+    for(i = 0; i < G.numVertexes; i++)
+        if(!visited[i])
+            DFS(G, i);
+}
+
+//? 广度遍历算法
+// 邻接矩阵结构
+
+//队列结构
+//循环队列书序存储结构
+typedef struct _SqQueue
+{
+    QElemType data[MAXSIZE];
+    int front;              //头指针
+    int rear;               //尾指针
+} SqQueue;
+
+
+//初始化一个空队列
+Status InitQueue(SqQueue *Q)
+{
+    Q->front = 0;
+    Q->rear = 0;
+    return OK;
+}
+
+//循坏队列求长度，返回Q的元素的个数，也就是队列当前的长度
+int QueueLength( SqQueue *Q)
+{
+    return (Q->rear - Q->front +MAXSIZE) %MAXSIZE;
+}
+
+//循环队列的入队列操作
+//若队列未满则插入元素e为Q新的队尾元素
+Status EnQueue( SqQueue *Q, QElemType e)
+{
+    if((Q->rear + 1) % MAXSIZE == Q->front)
+    return ERROR;
+    Q->data[Q->rear] = e;
+    Q->rear = (Q->rear + 1) % MAXSIZE;
+    return OK;
+}
+
+//循环队列的出队列操作
+//若队列不空，则删除Q中队头元素，用e返回其值
+
+Status DeQueue( SqQueue *Q, QElemType *e)
+{
+    if(Q->front == Q->rear) //队列空的判断
+        return ERROR;
+    *e = Q->data[Q->front];
+    Q->front = (Q->front +1) % MAXSIZE;
+    return OK;
+}
+
+void BFSTraverse(MGraph G)
+{
+    int i,j;
+    EnQueue Q;
+    for(i = 0; i<G.numVertexes; i++)
+        visited[i] = FALSE;
+    InitQueue(&Q);
+    for( i = 0; i< G.numVertexes; i++)
+    if(!visited[i])
+    {
+        visited[i] = TRUE;
+        printf("%c", G.vexs[i]);
+        EnQueue(&Q, i);
+        while(!Que)
+
+    }
+
 
 
 
