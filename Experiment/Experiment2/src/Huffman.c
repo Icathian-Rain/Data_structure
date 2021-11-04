@@ -239,7 +239,7 @@ void ShowTree(CodeTable *CT, HTree *HT)
 
 void EnCodeByCT(char *s, char *cd, CodeTable *CT)
 {
-    //通过字符表解码
+    //通过字符表编码
     //s = 目的字符串的地址, cd = 存储密文串的地址, CT = 字符表
     CodeNode *pc;
     char *p;
@@ -298,9 +298,6 @@ void DeCodeByCT(char *s, char *cd, CodeTable *CT)
 }
 
 
-
-
-
 void DeCodebyTree(char *s, char *cd, HTree *HT, CodeTable *CT)
 {
     //通过哈夫曼树解码
@@ -338,7 +335,7 @@ int main()
     HTree HT;
     FILE *fp;
     char *p, ch;
-    char Plaintext[2001],Ciphertext[10001] = "",Translatedtext[2001];
+    char Plaintext[10000],Ciphertext[20001] = "",Translatedtext[10000];
     char filename[100] = "C:\\Users\\Shooting stars\\Desktop\\Study\\C\\code\\Data_structure\\Experiment\\Experiment2\\src\\sampleE.txt";
     //从文件内读入字符串，保存在Plaintext里
     fp = fopen(filename, "r");

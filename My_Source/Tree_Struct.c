@@ -6,6 +6,7 @@
 #include <string.h>
 #include <math.h>
 
+#include <math.h>
 //双亲表示法
 #define MAX_TREE_SIZE 100
 typedef int TElemType;

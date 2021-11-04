@@ -52,6 +52,19 @@ void get_nextval(char *T, int *nextval)
     }
 }
 
+void get_nextP(char *T,int *next)
+{
+	int k,j;
+    next[0] = 0; j = 1;
+    for(j = 1; j<strlen(T); j++)
+    {
+		k = next[j-1];
+        while(k!=0 && T[k-1]!=T[j-1])
+        	k = next[k] - 1;
+        k = k+1; next[j] = k;
+    }
+}
+
 int Index_KMP(char *S, char *T, int pos)
 {
     int i = pos-1,len1,len2;
@@ -75,9 +88,6 @@ int Index_KMP(char *S, char *T, int pos)
         return i-len2+1;
     else
         return 0;
-
-
-
 }
 
 
@@ -85,12 +95,16 @@ int main()
 {
     
     char *T = "ababaaaba";
-    int nextval[1000],len,i,j;
-    len = strlen(T);
-    get_nextval(T, nextval);
-    for(i = 0; i<len; i++)
-    printf("nextval[%d] = %d\n", i,nextval[i]);
-    
+    int i;
+    // int nextval[1000],len,i,j;
+    // len = strlen(T);
+    // get_nextval(T, nextval);
+    // for(i = 0; i<len; i++)
+    // printf("nextval[%d] = %d\n", i,nextval[i]);
+    int next[100];
+    get_nextP(T, next);
+    for(i = 0; i<strlen(T); i++)
+    printf("%d", next[i]);
    //test2:KMP算法
 //    char *S = "googgooogleggg", *T = "google";
 //    int pos = 1;
