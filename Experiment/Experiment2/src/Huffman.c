@@ -41,6 +41,7 @@ void InitCodeTable(CodeTable *CT)
 
 int GetWeight(char *s, CodeTable *CT)
 {
+    //得到各个字符的权重，存在CT之中
     //s = 待编码的字符串, CT = 存储编码的序列
     char *p = s;            
     CodeNode *pc = NULL;;
@@ -77,7 +78,8 @@ int GetWeight(char *s, CodeTable *CT)
 
 void SortByWeight(CodeTable *CT)        
 {
-    //对传入的编码表依据权重排序，CT = 传入的编码表，
+    //对传入的编码表依据权重排序
+    //CT = 传入的编码表
     CodeNode *p, *q;
     int i, j;
     for(i = 0; i<CT->num - 1; i++)
@@ -152,49 +154,52 @@ void Select(HTree HT, int n, int *n1, int *n2)
 
 void HuffmanCoding(HTree *HT, CodeTable *CT)
 {
-    if(CT->num <= 1)
+    //对字符表进行哈夫曼编码，构建哈夫曼树
+    //HT = 构建的哈夫曼树的首地址, CT为字符表
+    if(CT->num <= 1)    //若总字符数小于1则返回
     return ;
-    char cd[41];
-    int m, i, c, f;
+    int m, i, c, f;     
     int s1, s2;
     CodeNode *pc;
-    m = 2* CT->num -1;
-    *HT = (HTree)malloc((m+1) * sizeof(HTNode));
-    for(i = 1, pc = CT->head->next; i<=CT->num; i++, pc = pc->next)
+    m = 2* CT->num -1;  
+    *HT = (HTree)malloc((m+1) * sizeof(HTNode));                //初始化哈夫曼树，结点数为叶子结点的2倍-1，首结点不存储
+    for(i = 1, pc = CT->head->next; i<=CT->num; i++, pc = pc->next)     //初始化叶子结点及，字符结点
     {
         (*HT)[i].weight = pc->weight;
         (*HT)[i].lchild = 0;
         (*HT)[i].rchild = 0;
         (*HT)[i].parent = 0;
     }
-    for( ; i<=m; i++)
+    for( ; i<=m; i++)                                                   //初始化非叶子结点
     {
         (*HT)[i].weight = 0;
         (*HT)[i].lchild = 0;
         (*HT)[i].rchild = 0;
         (*HT)[i].parent = 0;
     }
-    for(i = CT->num+1; i<=m; i++)
+    for(i = CT->num+1; i<=m; i++)                   //构建哈夫曼树
     {
-        Select(*HT, i-1, &s1, &s2);
-        (*HT)[s1].parent = i, (*HT)[s2].parent = i;
+        Select(*HT, i-1, &s1, &s2);                 //选取权重最小的两个结点
+        (*HT)[s1].parent = i, (*HT)[s2].parent = i; //双亲为最新的结点
         (*HT)[i].lchild = s1; (*HT)[i].rchild = s2;
         (*HT)[i].weight = (*HT)[s1].weight + (*HT)[s2].weight;
     }
-    for(i = 1, pc = CT->head->next; i<= CT->num; i++, pc = pc->next)
+    char *cd;        //存储编码串
+    int n = CT->num;
+    cd = (char *)malloc(sizeof(char) * n);
+    for(i = 1, pc = CT->head->next; i<= CT->num; i++, pc = pc->next)        //得到编码串
     {
-        int n, start;
-        n = 40;
+        int start;
         cd[n] = '\0';
         start = n;
-        for(c = i, f = (*HT)[i].parent; f!= 0; c = f, f = (*HT)[f].parent)
+        for(c = i, f = (*HT)[i].parent; f!= 0; c = f, f = (*HT)[f].parent)  //从结点向根倒序编码
         {
             if((*HT)[f].lchild == c)
                 cd[--start] = '0';
             else
                 cd[--start] = '1';
             pc->code = (char *)malloc(sizeof(char) * (n-start));
-            strcpy(pc->code, &cd[start]);
+            strcpy(pc->code, &cd[start]);           //将编码值赋给字符表中的code
         }
     }
 }
@@ -202,6 +207,8 @@ void HuffmanCoding(HTree *HT, CodeTable *CT)
 
 void ShowTable(CodeTable *CT)
 {
+    //输出字符表
+    //CT = 输入的字符表
     CodeNode *p;
     p = CT->head->next;
     while(p)
@@ -214,6 +221,8 @@ void ShowTable(CodeTable *CT)
 
 void ShowTree(CodeTable *CT, HTree *HT)
 {
+    //输出哈夫曼树
+    //CT = 字符表， HT = 哈夫曼树
     CodeNode *p;
     int i;
     for(i = 1, p = CT->head->next; i<= CT->num; i++, p = p->next)
@@ -228,8 +237,10 @@ void ShowTree(CodeTable *CT, HTree *HT)
 
 
 
-void EnCode(char *s, char *cd, CodeTable *CT)
+void EnCodeByCT(char *s, char *cd, CodeTable *CT)
 {
+    //通过字符表解码
+    //s = 目的字符串的地址, cd = 存储密文串的地址, CT = 字符表
     CodeNode *pc;
     char *p;
     p = s;
@@ -251,8 +262,10 @@ void EnCode(char *s, char *cd, CodeTable *CT)
 }
 
 
-void DeCode(char *s, char *cd, CodeTable *CT)
+void DeCodeByCT(char *s, char *cd, CodeTable *CT)
 {
+    //通过字符表CT进行解码
+    //s = 目的串地址，cd = 密文串地址， CT = 字符表
     int i = 0;
     char code[10000];
     char *p1, *p2;
@@ -269,14 +282,13 @@ void DeCode(char *s, char *cd, CodeTable *CT)
             pc = CT->head->next;
             while(pc)
             {
-                if(!strcmp(code, pc->code))
+                if(!strcmp(code, pc->code)) //匹配串与CT中的代码表
                 break;
                 pc = pc->next;
             }
             if(pc)
             {
                 *p1 = pc->data;
-                printf("%c", *p1);
                 p1++;
                 break;
             }
@@ -291,21 +303,17 @@ void DeCode(char *s, char *cd, CodeTable *CT)
 
 void DeCodebyTree(char *s, char *cd, HTree *HT, CodeTable *CT)
 {
+    //通过哈夫曼树解码
+    //s = 目的串地址， cd = 密文串地址, HT = 哈夫曼树地址, CT = 字符表的地址
     int root,i, j;
     char *p1, *p2;
     CodeNode *pc;
     p1 = s, p2 = cd;
-    root = 1;
-    while(1)
-    {
-        if((*HT)[root].parent == 0)
-        break;
-        root++;
-    }
+    root = 2 * CT->num - 1;
     while(*p2)
     {
         i = root;
-        while((*HT)[i].lchild != 0 || (*HT)[i].rchild != 0)
+        while((*HT)[i].lchild != 0 || (*HT)[i].rchild != 0)     //判断是否为叶子结点
         {
             if(*p2 == '0')
             i = (*HT)[i].lchild;
@@ -325,12 +333,14 @@ void DeCodebyTree(char *s, char *cd, HTree *HT, CodeTable *CT)
 
 int main()
 {
+    //定义变量
     CodeTable CT;
     HTree HT;
     FILE *fp;
     char *p, ch;
-    char Plaintext[2001],Ciphertext[10001] = "",Translatetext[2001];
+    char Plaintext[2001],Ciphertext[10001] = "",Translatedtext[2001];
     char filename[100] = "C:\\Users\\Shooting stars\\Desktop\\Study\\C\\code\\Data_structure\\Experiment\\Experiment2\\src\\sampleE.txt";
+    //从文件内读入字符串，保存在Plaintext里
     fp = fopen(filename, "r");
     if(!fp)
         printf("Error!\n");
@@ -340,16 +350,27 @@ int main()
         *p++ = ch;
     }
     *p = '\0';
+    //编码
+    //初始化编码表
     InitCodeTable(&CT);
+    //得到权重
     GetWeight(Plaintext, &CT);
-    // SortByWeight(&CT);
+    //排序
     SortByASCII(&CT);
+    // SortByWeight(&CT);
+    //哈夫曼编码
     HuffmanCoding(&HT, &CT);
-    // ShowTable(&CT);
+    //编码明文
+    EnCodeByCT(Plaintext, Ciphertext, &CT);
+    printf("%s", Ciphertext);
+    printf("\n");
+    //输出字符表与哈夫曼树
+    ShowTable(&CT);
     ShowTree(&CT, &HT);
-    EnCode(Plaintext, Ciphertext, &CT);
-    // DeCode(t, cd, &CT);
-    DeCodebyTree(Translatetext, Ciphertext, &HT, &CT);
-    printf("%s", Translatetext);
+    //解码
+    DeCodeByCT(Translatedtext, Ciphertext, &CT);
+    DeCodebyTree(Translatedtext, Ciphertext, &HT, &CT);
+    //输出解码后的密文
+    printf("%s", Translatedtext);
     return 0;
 }
