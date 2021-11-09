@@ -362,10 +362,10 @@ int main()
     printf("%s", Ciphertext);
     printf("\n");
     //输出字符表与哈夫曼树
-    ShowTable(&CT);
+    // ShowTable(&CT);
     ShowTree(&CT, &HT);
     //解码
-    DeCodeByCT(Translatedtext, Ciphertext, &CT);
+    // DeCodeByCT(Translatedtext, Ciphertext, &CT);
     DeCodebyTree(Translatedtext, Ciphertext, &HT, &CT);
     //输出解码后的密文
     printf("%s", Translatedtext);

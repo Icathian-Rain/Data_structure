@@ -302,7 +302,7 @@ void ShowTree(CodeTable *CT, HTree *HT)
     int i;
     for(i = 1, p = CT->head->next; i<= CT->num; i++, p = p->next)
     {
-        printf("序号%d--W%d--//P%d//L%d//R%d//%s==>%s\n", i-1, (*HT)[i].weight,(*HT)[i].parent, (*HT)[i].lchild, (*HT)[i].rchild, p->data, p->code );
+        printf("序号:%d--W%d--//P%d//L%d//R%d//%s==>%s\n", i-1, (*HT)[i].weight,(*HT)[i].parent, (*HT)[i].lchild, (*HT)[i].rchild, p->data, p->code );
     }
     for(; i<=CT->num * 2-1; i++)
     {
@@ -312,7 +312,7 @@ void ShowTree(CodeTable *CT, HTree *HT)
 
 int main()
 {
-    system("chcp 65001");
+    // system("chcp 65001");
     //定义变量
     CodeTable CT;
     HTree HT;
@@ -344,10 +344,10 @@ int main()
     printf("%s", Ciphertext);
     printf("\n");
     //输出字符表与哈夫曼树
-    ShowTable(&CT);
+    // ShowTable(&CT);
     ShowTree(&CT, &HT);
     //解码
-    DeCodeByCT(Translatedtext, Ciphertext, &CT);
+    // DeCodeByCT(Translatedtext, Ciphertext, &CT);
     DeCodebyTree(Translatedtext, Ciphertext, &HT, &CT);
     //输出解码后的密文
     printf("%s", Translatedtext);
