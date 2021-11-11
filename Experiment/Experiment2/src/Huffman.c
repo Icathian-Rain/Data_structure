@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <unistd.h>
 #define MAXSIZE 100
 //数据类型为char 
 typedef char ElemType;
@@ -290,7 +291,7 @@ void Inordertraverse(HTree *HT, int i)
     if(i)
     {
         Inordertraverse(HT, (*HT)[i].lchild);
-        printf("%d", i);
+        printf("%d\n", i);
         Inordertraverse(HT, (*HT)[i].rchild);
     }
     return ;
@@ -313,7 +314,7 @@ void InordertraverseP(HTree *HT, int i)
         if(S.top)
         {
             i = Pop(&S);
-            printf("%d", i);
+            printf("%d\n", i);
             i = (*HT)[i].rchild;
         }
     } while (S.top || i);
@@ -336,7 +337,7 @@ void EnCodeByCT(char *s, char *cd, CodeTable *CT)
         pc = CT->head->next;
         while(pc)
         {
-            if(pc->data == *p)
+            if(pc->data == *p)  //若母的字符为指向的字符
             break;
             pc = pc->next;
         }
@@ -435,14 +436,15 @@ void Compressibility(char *Modeltext,char *Worktext, char *CiphertextM,char *Cip
 
 int main()
 {
+    chdir("code\\Data_structure\\Experiment\\Experiment2\\src");
     //定义变量
     CodeTable CT;
     HTree HT;
     FILE *fp;
     char *p, ch;
     char Modeltext[10000],CiphertextM[20001] = "",Worktext[10000],CiphertextW[20001],Translatedtext[10000];
-    char ModelFile[100] = "C:\\Users\\Shooting stars\\Desktop\\Study\\C\\code\\Data_structure\\Experiment\\Experiment2\\src\\sampleE.txt";
-    char WorkFIle[100] = "C:\\Users\\Shooting stars\\Desktop\\Study\\C\\code\\Data_structure\\Experiment\\Experiment2\\src\\sample.txt";
+    char ModelFile[100] = "sampleE.txt";
+    char WorkFIle[100] = "sample.txt";
     //从文件内读入字符串，保存在Model里
     fp = fopen(ModelFile, "r");
     if(!fp)
@@ -453,6 +455,7 @@ int main()
         *p++ = ch;
     }
     *p = '\0';
+    fclose(fp);
     //从文件内读入要编码的字符串，保存在Worktext里
     fp = fopen(WorkFIle,"r");
     if(!fp)
@@ -463,6 +466,7 @@ int main()
         *p++ = ch;
     }
     *p = '\0'; 
+    fclose(fp);
     //编码
     //初始化编码表
     InitCodeTable(&CT);
@@ -473,23 +477,21 @@ int main()
     // SortByWeight(&CT);
     //哈夫曼编码
     HuffmanCoding(&HT, &CT);
-    // ShowTree(&CT, &HT);
-    // Inordertraverse(&HT, CT.num*2-1);
-    // printf("\n");
-    // InordertraverseP(&HT, CT.num*2 - 1);
     //编码文本
     EnCodeByCT(Modeltext, CiphertextM, &CT);
     EnCodeByCT(Worktext, CiphertextW, &CT);
-    // printf("%s\n", CiphertextM);
+    //中序遍历
+    // Inordertraverse(&HT, 2*CT.num-1);
+    //输出哈夫曼编码
+    ShowTable(&CT);
+    ShowTree(&CT, &HT);
     //压缩率计算
     Compressibility(Modeltext,Worktext,CiphertextM,CiphertextW);
-    //输出字符表与哈夫曼树
-    // ShowTable(&CT);
-    // ShowTree(&CT, &HT);
     //解码
-    // DeCodeByCT(Translatedtext, CiphertextM, &CT);
     DeCodebyTree(Translatedtext, CiphertextW, &HT, &CT);
     //输出解码后的密文
+    printf("%s\n", CiphertextW);
     printf("%s", Translatedtext);
+    system("pause");
     return 0;
 }

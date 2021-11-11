@@ -347,7 +347,7 @@ int main()
     ShowTree(&CT, &HT);
     //解码
     DeCodeByCT(Translatedtext, Ciphertext, &CT);
-    DeCodebyTree(Translatedtext, Ciphertext, &HT, &CT);
+    // DeCodebyTree(Translatedtext, Ciphertext, &HT, &CT);
     //输出解码后的密文
     printf("%s", Translatedtext);
     return 0;

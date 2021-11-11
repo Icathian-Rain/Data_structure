@@ -314,7 +314,7 @@ void ShowTree(CodeTable *CT, HTree *HT)
 
 int main()
 {
-    // system("chcp 65001");
+    system("chcp 65001");
     //定义变量
     CodeTable CT;
     HTree HT;
@@ -343,11 +343,11 @@ int main()
     HuffmanCoding(&HT, &CT);
     //编码明文
     EnCodeByCT(Plaintext, Ciphertext, &CT);
-    printf("%s", Ciphertext);
+    // printf("%s", Ciphertext);
     printf("\n");
     //输出字符表与哈夫曼树
-    // ShowTable(&CT);
-    ShowTree(&CT, &HT);
+    ShowTable(&CT);
+    // ShowTree(&CT, &HT);
     //解码
     // DeCodeByCT(Translatedtext, Ciphertext, &CT);
     DeCodebyTree(Translatedtext, Ciphertext, &HT, &CT);
