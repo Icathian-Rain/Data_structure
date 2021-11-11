@@ -23,8 +23,9 @@ typedef struct _CodeNode
     struct _CodeNode *next; //下一个结点
 } CodeNode;
 
-//CodeTable存放编码的序列，head结点不用于存储
+
 typedef struct _CodeTable
+//CodeTable存放编码的序列，head结点不用于存储
 {
     CodeNode *head;
     CodeNode *tail;
@@ -33,18 +34,21 @@ typedef struct _CodeTable
 
 
 typedef struct _Stack
+//堆栈定义
 {
     int top;
     int data[MAXSIZE];
 } Stack;
 
 void InitStack(Stack *S)
+//堆栈初始化，使S.top清零
 {
     S->top = 0;
     return ;
 }
 
 int Push(Stack *S, int e)
+//入栈操作，将数据e压入堆栈S
 {
     S->data[S->top] = e;
     S->top ++;
@@ -54,6 +58,7 @@ int Push(Stack *S, int e)
 }
 
 int Pop(Stack *S)
+//出栈操作，将S栈顶元素出栈
 {
     S->top --;
     if(S->top <0)
@@ -62,8 +67,11 @@ int Pop(Stack *S)
 }
 
 void InitCodeTable(CodeTable *CT)
+    /*
+    初始化CodeTable
+    *CT = 待初始化的CodeTable的地址
+    */
 {
-    //初始化CodeTable，CT = 待初始化的CodeTable的地址
     CT->head = (CodeNode *)malloc(sizeof(CodeNode));
     CT->head->next = NULL;
     CT->tail = CT->head;
@@ -71,9 +79,9 @@ void InitCodeTable(CodeTable *CT)
 }
 
 int GetWeight(char *s, CodeTable *CT)
-{
     //得到各个字符的权重，存在CT之中
     //s = 待编码的字符串, CT = 存储编码的序列
+{
     char *p = s;            
     CodeNode *pc = NULL;;
     while (*p)
@@ -269,6 +277,9 @@ void ShowTree(CodeTable *CT, HTree *HT)
 
 void Inordertraverse(HTree *HT, int i)
 {
+    //中序遍历使用递归
+    //HT = 哈夫曼树组名
+    // i = 根结点序号
     // if((*HT)[i].lchild == 0 && (*HT)[i].rchild == 0)
     // {
     //     CodeNode *p;
@@ -286,7 +297,10 @@ void Inordertraverse(HTree *HT, int i)
 }
 
 void InordertraverseP(HTree *HT, int i)
+//中序遍历非递归
+//HT = 哈夫曼树组， i = 根结点序号
 {
+
     Stack S;
     InitStack(&S);
     do
@@ -406,9 +420,11 @@ void DeCodebyTree(char *s, char *cd, HTree *HT, CodeTable *CT)
 
 void Compressibility(char *Modeltext,char *Worktext, char *CiphertextM,char *CiphertextW)
 {
-    double Theroratio, Actualratio;
-    Theroratio = strlen(CiphertextM)/(strlen(Modeltext) * 8.0);
-    Actualratio = strlen(CiphertextW)/(strlen(Worktext) * 8.0);
+    //计算压缩率
+    //Modeltext = 模板字符串，Worktext = 压缩字符串, CiphertextM = 压缩后的模板串，CiphertextW = 压缩后的工作串
+    double Theroratio, Actualratio; //存储
+    Theroratio = 1 - (strlen(CiphertextM)/(strlen(Modeltext) * 8.0));
+    Actualratio =1 - (strlen(CiphertextW)/(strlen(Worktext) * 8.0));
     printf("理论压缩率:%lf\n", Theroratio);
     printf("实际压缩率:%lf\n", Actualratio);
     return ;

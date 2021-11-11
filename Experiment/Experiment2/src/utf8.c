@@ -284,6 +284,8 @@ void DeCodebyTree(char *s, char *cd, HTree *HT, CodeTable *CT)
 
 void ShowTable(CodeTable *CT)
 {
+    //输出CodeTable
+    //CT = 
     CodeNode *p;
     p = CT->head->next;
     while(p)
