@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#define MAXSIZE 100
 //数据类型为char 
 typedef char ElemType;
 
@@ -29,6 +30,36 @@ typedef struct _CodeTable
     CodeNode *tail;
     int num;
 } CodeTable;
+
+
+typedef struct _Stack
+{
+    int top;
+    int data[MAXSIZE];
+} Stack;
+
+void InitStack(Stack *S)
+{
+    S->top = 0;
+    return ;
+}
+
+int Push(Stack *S, int e)
+{
+    S->data[S->top] = e;
+    S->top ++;
+    if(S->top == MAXSIZE)
+    return -1;
+    return 1;
+}
+
+int Pop(Stack *S)
+{
+    S->top --;
+    if(S->top <0)
+    return -1;
+    return S->data[S->top];
+}
 
 void InitCodeTable(CodeTable *CT)
 {
@@ -236,6 +267,48 @@ void ShowTree(CodeTable *CT, HTree *HT)
 }
 
 
+void Inordertraverse(HTree *HT, int i)
+{
+    // if((*HT)[i].lchild == 0 && (*HT)[i].rchild == 0)
+    // {
+    //     CodeNode *p;
+    //     int j;
+    // for(j = 1, p = CT->head->next; j<i ; j++, p = p->next)
+    // printf("%c's code is %s\n", p->data, p->code);
+    // }
+    if(i)
+    {
+        Inordertraverse(HT, (*HT)[i].lchild);
+        printf("%d", i);
+        Inordertraverse(HT, (*HT)[i].rchild);
+    }
+    return ;
+}
+
+void InordertraverseP(HTree *HT, int i)
+{
+    Stack S;
+    InitStack(&S);
+    do
+    {
+        while(i)
+        {
+            Push(&S, i);
+            i = (*HT)[i].lchild;
+        }
+        if(S.top)
+        {
+            i = Pop(&S);
+            printf("%d", i);
+            i = (*HT)[i].rchild;
+        }
+    } while (S.top || i);
+    return ;
+}
+
+
+
+
 
 void EnCodeByCT(char *s, char *cd, CodeTable *CT)
 {
@@ -260,6 +333,10 @@ void EnCodeByCT(char *s, char *cd, CodeTable *CT)
         p++;
     }
 }
+
+
+
+
 
 
 void DeCodeByCT(char *s, char *cd, CodeTable *CT)
@@ -327,6 +404,18 @@ void DeCodebyTree(char *s, char *cd, HTree *HT, CodeTable *CT)
 }
 
 
+void Compressibility(char *Modeltext,char *Worktext, char *CiphertextM,char *CiphertextW)
+{
+    double Theroratio, Actualratio;
+    Theroratio = strlen(CiphertextM)/(strlen(Modeltext) * 8.0);
+    Actualratio = strlen(CiphertextW)/(strlen(Worktext) * 8.0);
+    printf("理论压缩率:%lf\n", Theroratio);
+    printf("实际压缩率:%lf\n", Actualratio);
+    return ;
+}
+
+
+
 
 int main()
 {
@@ -335,38 +424,55 @@ int main()
     HTree HT;
     FILE *fp;
     char *p, ch;
-    char Plaintext[10000],Ciphertext[20001] = "",Translatedtext[10000];
-    char filename[100] = "C:\\Users\\Shooting stars\\Desktop\\Study\\C\\code\\Data_structure\\Experiment\\Experiment2\\src\\sampleE.txt";
-    //从文件内读入字符串，保存在Plaintext里
-    fp = fopen(filename, "r");
+    char Modeltext[10000],CiphertextM[20001] = "",Worktext[10000],CiphertextW[20001],Translatedtext[10000];
+    char ModelFile[100] = "C:\\Users\\Shooting stars\\Desktop\\Study\\C\\code\\Data_structure\\Experiment\\Experiment2\\src\\sampleE.txt";
+    char WorkFIle[100] = "C:\\Users\\Shooting stars\\Desktop\\Study\\C\\code\\Data_structure\\Experiment\\Experiment2\\src\\sample.txt";
+    //从文件内读入字符串，保存在Model里
+    fp = fopen(ModelFile, "r");
     if(!fp)
         printf("Error!\n");
-    p = Plaintext;
+    p = Modeltext;
     while((ch = fgetc(fp)) != -1)
     {
         *p++ = ch;
     }
     *p = '\0';
+    //从文件内读入要编码的字符串，保存在Worktext里
+    fp = fopen(WorkFIle,"r");
+    if(!fp)
+        printf("Error!\n");
+    p = Worktext;
+    while((ch = fgetc(fp)) != -1)
+    {
+        *p++ = ch;
+    }
+    *p = '\0'; 
     //编码
     //初始化编码表
     InitCodeTable(&CT);
     //得到权重
-    GetWeight(Plaintext, &CT);
+    GetWeight(Modeltext, &CT);
     //排序
     SortByASCII(&CT);
     // SortByWeight(&CT);
     //哈夫曼编码
     HuffmanCoding(&HT, &CT);
-    //编码明文
-    EnCodeByCT(Plaintext, Ciphertext, &CT);
-    printf("%s", Ciphertext);
-    printf("\n");
+    // ShowTree(&CT, &HT);
+    // Inordertraverse(&HT, CT.num*2-1);
+    // printf("\n");
+    // InordertraverseP(&HT, CT.num*2 - 1);
+    //编码文本
+    EnCodeByCT(Modeltext, CiphertextM, &CT);
+    EnCodeByCT(Worktext, CiphertextW, &CT);
+    // printf("%s\n", CiphertextM);
+    //压缩率计算
+    Compressibility(Modeltext,Worktext,CiphertextM,CiphertextW);
     //输出字符表与哈夫曼树
     // ShowTable(&CT);
-    ShowTree(&CT, &HT);
+    // ShowTree(&CT, &HT);
     //解码
-    // DeCodeByCT(Translatedtext, Ciphertext, &CT);
-    DeCodebyTree(Translatedtext, Ciphertext, &HT, &CT);
+    // DeCodeByCT(Translatedtext, CiphertextM, &CT);
+    DeCodebyTree(Translatedtext, CiphertextW, &HT, &CT);
     //输出解码后的密文
     printf("%s", Translatedtext);
     return 0;
